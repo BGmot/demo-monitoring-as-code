@@ -1,0 +1,48 @@
+---
+# Create all instances
+- hosts: all
+  gather_facts: false
+  tasks:
+  - ansible.builtin.include_role:
+      name: roles/infra_create
+
+# Delete all instances tahta are not present in Inventory
+- hosts: all
+  gather_facts: false
+  vars:
+    x_current_servers: []
+  tasks:
+  - delegate_to: localhost
+    run_once: true
+    block:
+    - name: Get all currently running servers
+      linode.cloud.instance_list:
+        api_token: "{{ x_api_token }}"
+        filters:
+        - name: tags
+          values: "{{ x_linode_tag }}"
+      register: out
+
+    - name: Create a list of currently running servers
+      ansible.builtin.set_fact:
+        x_current_servers: "{{ x_current_servers + [ item.label ] }}"
+      loop: "{{ out.instances }}"
+
+    - name: Create oa list of servers to delete
+      ansible.builtin.set_fact:
+        x_to_delete: "{{ x_current_servers | difference(ansible_play_hosts_all) }}"
+
+    - ansible.builtin.include_role:
+        name: roles/cleanup
+
+# Exectute post-deployment tasks
+- hosts: all
+  gather_facts: false
+  tasks:
+  - name: Wait 120 seconds for target connection to become available/usable
+    ansible.builtin.wait_for_connection:
+      timeout: 120
+
+  - ansible.builtin.setup:
+
+  - debug: var=ansible_distribution

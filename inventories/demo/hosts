@@ -1,0 +1,8 @@
+[databases]
+zabbix-db01
+
+[app_servers]
+zabbix-server01
+
+[frontends]
+zabbix-web01

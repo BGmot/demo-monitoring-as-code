@@ -1,0 +1,6 @@
+.vault-pass
+*.swp
+roles/geerlingguy.apache-php-fpm/
+roles/geerlingguy.apache/
+roles/geerlingguy.php/
+roles/geerlingguy.postgresql/

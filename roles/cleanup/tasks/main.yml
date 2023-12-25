@@ -1,0 +1,7 @@
+---
+- name: Delete instance
+  linode.cloud.instance:
+    api_token: "{{ x_api_token }}"
+    label: "{{ item }}"
+    state: absent
+  loop: "{{ x_to_delete }}"

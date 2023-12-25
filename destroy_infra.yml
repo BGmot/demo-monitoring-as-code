@@ -1,0 +1,6 @@
+---
+- hosts: all
+  gather_facts: false
+  tasks:
+  - ansible.builtin.include_role:
+      name: roles/infra_destroy

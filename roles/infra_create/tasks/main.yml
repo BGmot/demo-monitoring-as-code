@@ -1,0 +1,18 @@
+---
+- name: Create server
+  linode.cloud.instance:
+    api_token: "{{ x_api_token }}"
+    label: "{{ inventory_hostname }}"
+    tags:
+    - "{{ x_linode_tag }}"
+    type: "{{ x_linode_type }}"
+    region: "{{ x_linode_region }}"
+    image: linode/ubuntu22.04
+    authorized_keys:
+    - "{{ x_ssh_auth_key }}"
+    state: present
+  delegate_to: localhost
+  register: out
+
+- set_fact:
+    ansible_host: "{{ out.instance.ipv4[0] }}"
