@@ -6,6 +6,12 @@
   - ansible.builtin.include_role:
       name: roles/infra_create
 
+  - name: Initialize variables with all IP addresses
+    set_fact:
+      x_zabbix_db_ip: "{{ hostvars['zabbix-db01']['ansible_host'] }}"
+      x_zabbix_server_ip: "{{ hostvars['zabbix-server01']['ansible_host'] }}"
+      x_zabbix_web_ip: "{{ hostvars['zabbix-web01']['ansible_host'] }}"
+
 # Delete all instances tahta are not present in Inventory
 - hosts: all
   gather_facts: false
@@ -43,6 +49,45 @@
     ansible.builtin.wait_for_connection:
       timeout: 120
 
-  - ansible.builtin.setup:
+# Install PostgreSQL
+- hosts: databases
+  gather_facts: true
+  tasks:
+  - name: Install psycopg2 package needed by postgresql role
+    ansible.builtin.package:
+      name: python3-psycopg2
+      update_cache: true
 
-  - debug: var=ansible_distribution
+  - ansible.builtin.include_role:
+      name: geerlingguy.postgresql
+
+# Install Zabbix server
+- hosts: app_servers
+  gather_facts: true
+  tasks:
+  - ansible.builtin.include_role:
+      name: community.zabbix.zabbix_server
+
+# Install Zabbix Web
+- hosts: frontends
+  gather_facts: true
+  tasks:
+  - ansible.builtin.include_role:
+      name: geerlingguy.php
+    vars:
+      php_packages:
+      - php
+      - php-fpm
+
+  - ansible.builtin.include_role:
+      name: geerlingguy.apache-php-fpm
+
+  - ansible.builtin.include_role:
+      name: community.zabbix.zabbix_web
+
+# Install Zabbix agent
+- hosts: all
+  gather_facts: true
+  tasks:
+  - ansible.builtin.include_role:
+      name: community.zabbix.zabbix_agent

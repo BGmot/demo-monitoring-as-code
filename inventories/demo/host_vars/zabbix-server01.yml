@@ -1,0 +1,2 @@
+---
+zabbix_server_dbhost: "{{ x_zabbix_db_ip }}"

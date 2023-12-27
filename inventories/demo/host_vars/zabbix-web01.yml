@@ -1,0 +1,5 @@
+---
+zabbix_api_server_url: "{{ x_zabbix_web_ip }}"
+zabbix_server_name: mac-demo
+zabbix_server_hostname: "{{ x_zabbix_server_ip }}"
+zabbix_server_dbhost: "{{ x_zabbix_db_ip }}"

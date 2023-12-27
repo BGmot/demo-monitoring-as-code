@@ -1,0 +1,5 @@
+---
+- name: geerlingguy.postgresql
+- name: geerlingguy.php
+- name: geerlingguy.apache-php-fpm
+- name: geerlingguy.apache
