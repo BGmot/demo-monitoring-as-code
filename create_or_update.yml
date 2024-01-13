@@ -91,3 +91,17 @@
   tasks:
   - ansible.builtin.include_role:
       name: community.zabbix.zabbix_agent
+
+# Add all hosts to Zabbix server
+- hosts: all
+  gather_facts: false
+  tasks:
+  - ansible.builtin.include_role:
+      name: roles/monitoring
+
+- hosts: databases
+  gather_facts: false
+  tasks:
+  - ansible.builtin.include_role:
+      name: roles/monitoring
+      tasks_from: postgresql

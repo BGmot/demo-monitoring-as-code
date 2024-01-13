@@ -1,0 +1,39 @@
+---
+- name: Construct a list of all groups
+  run_once: true
+  set_fact:
+    x_host_groups: "{{ (x_host_groups | default([])) + [item.key] }}"
+  when:
+  - item.key != "all"
+  - item.key != "ungrouped"
+  loop: "{{ groups | dict2items }}"
+
+- delegate_to: "{{ x_zabbix_web_ip }}"
+  vars:
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: "{{ x_zabbix_username }}"
+  block:
+  - name: Create host groups
+    run_once: true
+    community.zabbix.zabbix_group:
+      host_groups: "{{ x_host_groups }}"
+
+  - name: Import custom templates
+    community.zabbix.zabbix_template:
+      template_groups: Templates
+      template_json: "{{ lookup('file', 'files/' + item) }}"
+      state: present
+    with_items: "{{ x_custom_templates_files }}"
+
+  - name: "Add/update hosts"
+    community.zabbix.zabbix_host:
+      host_name: "{{ inventory_hostname }}"
+      host_groups: "{{ group_names + ['Linux servers'] }}"
+      link_templates: "{{ x_templates + ['Linux by Zabbix agent'] }}"
+      interfaces:
+      - type: agent
+        main: 1
+        useip: 1
+        ip: "{{ ansible_host }}"
+      state: present    

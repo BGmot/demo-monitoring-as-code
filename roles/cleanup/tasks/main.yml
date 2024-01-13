@@ -5,3 +5,44 @@
     label: "{{ item }}"
     state: absent
   loop: "{{ x_to_delete }}"
+
+- name: Check if Zabbix server already installed and running
+  vars:
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: "{{ x_zabbix_username }}"
+  community.zabbix.zabbix_api_info:
+  register: x_zaabix_api_info
+  ignore_errors: true
+  delegate_to: "{{ x_zabbix_web_ip }}"
+
+- name: Deelete hosts from Zabbix
+  delegate_to: "{{ x_zabbix_web_ip }}"
+  vars:
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: "{{ x_zabbix_username }}"
+  when: not x_zaabix_api_info,failed
+  block:
+  - name: Get all currently configured hosts in Zabbix
+    community.zabbix.zabbix_host_info:
+    register: out
+
+  - name: Assume no hosts configured in Zabbix
+    set_fact:
+      x_zabbix_hosts_list: []
+
+  - name: Create a list of all hosts configured in Zabbix
+    set_fact:
+      x_zabbix_hosts_list: "{{ x_zabbix_hosts_list + [item.host] }}"
+    loop: "{{ out.hosts }}"
+
+  - name: Create a list of hosts to delete from Zabbix server
+    set_fact:
+      x_to_delete_from_zabbix: "{{ x_zabbix_hosts_list | difference(x_current_servers) }}"
+
+  - name: Delete hosts from Zabbix server
+    community.zabbix.zabbix_host:
+      host_name: "{{ item }}"
+      state: absent
+    loop: "{{ x_to_delete_from_zabbix }}"

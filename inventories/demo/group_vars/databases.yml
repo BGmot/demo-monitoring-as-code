@@ -1,2 +1,4 @@
 ---
 x_linode_type: g6-standard-2
+x_templates:
+- PostgreSQL by Zabbix agent 2

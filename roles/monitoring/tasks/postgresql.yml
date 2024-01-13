@@ -1,0 +1,27 @@
+---
+- name: Install Zabbix agent 2 PostgreSQL plugin
+  package:
+    name: zabbix-agent2-plugin-postgresql
+  register: plugin_installed
+
+- name: Add host macros
+  vars:
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_user: "{{ x_zabbix_username }}"
+  community.zabbix.zabbix_hostmacro:
+    host_name: "{{ inventory_hostname }}"
+    macro_name: "{{ item.name }}"
+    macro_value: "{{ item.value }}"
+  with_items:
+  - name: "{$PG.CONNSTRING}"
+    value: "tcp://localhost:5432"
+  - name: "{$PG.PASSWORD}"
+    value: "zbx_monitor_pass"
+  delegate_to: "{{ x_zabbix_web_ip }}"
+
+- name: Restart ZAbbix agent
+  ansible.builtin.service:
+    name: zabbix-agent2
+    state: restarted
+  when: plugin_installed.changed

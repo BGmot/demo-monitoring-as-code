@@ -11,3 +11,8 @@ postgresql_hba_entries:
 - {type: host, database: all, user: all, address: '::1/128', auth_method: "{{ postgresql_auth_method }}"}
 - {type: host, database: zabbix-server, user: zabbix-server, address: "{{ x_zabbix_server_ip }}/32", auth_method: "{{ postgresql_auth_method }}"}
 - {type: host, database: zabbix-server, user: zabbix-server, address: "{{ x_zabbix_web_ip }}/32", auth_method: "{{ postgresql_auth_method }}"}
+postgresql_users:
+- name: zbx_monitor
+  password: zbx_monitor_pass
+zabbix_agent2_addidional_include:
+- /etc/zabbix/zabbix_agent2.d/plugins.d

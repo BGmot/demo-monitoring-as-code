@@ -1,2 +1,7 @@
 ---
 x_linode_type: g6-standard-1
+x_templates:
+- Apache by Zabbix agent
+apache_mods_enabled:
+- rewrite
+- status

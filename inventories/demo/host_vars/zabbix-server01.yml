@@ -1,2 +1,7 @@
 ---
 zabbix_server_dbhost: "{{ x_zabbix_db_ip }}"
+x_templates:
+- Zabbix server health
+- My cool template
+x_custom_templates_files:
+- my_cool_template.json

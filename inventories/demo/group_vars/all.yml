@@ -12,3 +12,11 @@ x_api_token: !vault |
 x_linode_tag: Demo-MaC
 x_linode_region: ca-central
 x_ssh_auth_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0hUWtb6rMqB4mB1DnNNv9XxGLSE5V7Rgy/Ms4BpOX0nH5+6yzS1GrltBJ1+SOfPUWYCK23ynxUCRT2PPbF0P1RAFYHOsSCvhoDYBU3l/VWvYr/tezqkCP+qRKEBcp5GnoefB6Whvt9QwnmtulCyv+dQQUB4Bz/yj29kBoEntZT2Gv9r8Ang+hn1BpT/ngFbRDGSFmPG6GZBunEl0C0poHkD2ZgUGaKXuvgUaFpDhkUuq10Uhp+zKZN/nBnKHL7Gfi+zPzmyFYqeE2SNgHy5V6sBlJ+B42OJ9vvdvDuyBY/0Q9YQEx1cjqE17XAUuzprC2BPmM4qxEmKpFuA+/Rp/VKlnEviKBqt68dFkHJPT9GomL4YS2w507HIRBTPfF2gDtcig+yZCFYPVFFp4Xxaxo0POQS/aTXXX0JURiu6iWgE0rznuyi2YZ955gu3m43977yoREZY04OgFmYzDM31gE6gTIqoEGTwhEjGX+OY+DKmT0n+UH5SukHj3YMctSlYs= ey@ls1"
+zabbix_agent2: true
+zabbix_agent2_server: "{{ x_zabbix_server_ip }}"
+x_zabbix_username: Admin
+x_zabbix_password: zabbix
+ansible_httpapi_port: 80
+ansible_httpapi_pass: "{{ x_zabbix_password }}"
+x_templates: []
+x_custom_templates_files: []
