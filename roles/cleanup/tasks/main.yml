@@ -22,7 +22,7 @@
     ansible_network_os: community.zabbix.zabbix
     ansible_connection: httpapi
     ansible_user: "{{ x_zabbix_username }}"
-  when: not x_zaabix_api_info,failed
+  when: not x_zaabix_api_info.failed
   block:
   - name: Get all currently configured hosts in Zabbix
     community.zabbix.zabbix_host_info:
